@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Music Page</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<h2>Upload Music Page</h2>
+
+<div class="container">
+  <div class="form-group">
+    <label for="youtubeUrl">YouTube URL:</label>
+    <input type="text" id="youtubeUrl" class="form-control">
+  </div>
+  <button id="submitButton" class="btn btn-primary">Submit</button>
+  <div id="message" class="alert mt-3" style="display: none;"></div>
+</div>
+
+<script>
+  document.getElementById('submitButton').addEventListener('click', function () {
+    const youtubeUrl = document.getElementById('youtubeUrl').value;
+    const messageElement = document.getElementById('message');
+
+    if (!youtubeUrl) {
+      messageElement.textContent = 'Please enter a YouTube URL.';
+      messageElement.className = 'alert alert-danger mt-3';
+      messageElement.style.display = 'block';
+      return;
+    }
+
+    fetch('/api/v1/uploadAudioFiles', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ youtubeUrl: youtubeUrl })
+    })
+            .then(response => {
+              if (response.ok) {
+                messageElement.textContent = 'Audio file uploaded successfully!';
+                messageElement.className = 'alert alert-success mt-3';
+              } else {
+                return response.text().then(text => {
+                  throw new Error(text);
+                });
+              }
+            })
+            .catch(error => {
+              messageElement.textContent = `Error: ${error.message}`;
+              messageElement.className = 'alert alert-danger mt-3';
+            })
+            .finally(() => {
+              messageElement.style.display = 'block';
+            });
+  });
+</script>
+
+</body>
+</html>
