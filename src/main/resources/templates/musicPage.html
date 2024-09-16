@@ -20,9 +20,12 @@
 <br />
 <button id="previous-button">Previous</button>
 <br />
-<a href="/upload-music">Upload Music</a>
+<a href="/MoreMusicWebApp/upload">Upload Music</a>
 
 <script>
+  const currentPath = window.location.pathname;
+  const contextPath = currentPath.split('/')[1];
+  const apiUrl = `/${contextPath}/api/v1/audioFiles`;
   const audio = document.getElementById('audio-player');
   const playButton = document.getElementById('play-button');
   const nextButton = document.getElementById('next-button');
@@ -118,7 +121,7 @@
   }
 
   // Fetch audio files from your REST API
-  fetch('/api/v1/audioFiles')
+  fetch(apiUrl)
           .then(response => response.json())
           .then(files => {
             audioFiles = files;

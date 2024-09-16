@@ -6,10 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class WebController {
-    @GetMapping("/home")
-    public String index(Model model) {
-        model.addAttribute("message", "Welcome to MoreMusic Web App!");
-        return "index";
+    @GetMapping("/")
+    public String homePage(Model model) {
+        return "home";
     }
 
     @GetMapping("/music")
