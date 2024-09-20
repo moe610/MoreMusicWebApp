@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,7 +20,7 @@
 <br />
 <button id="previous-button">Previous</button>
 <br />
-<a href="/MoreMusicWebApp/upload">Upload Music</a>
+<a th:href="@{/upload}">Upload Music</a>
 
 <script>
   const currentPath = window.location.pathname;
@@ -94,19 +94,15 @@
         ],
       });
       navigator.mediaSession.setActionHandler('nexttrack', () => {
-        console.log('User clicked "Next Track" icon.');
         skipForward();
       });
       navigator.mediaSession.setActionHandler('previoustrack', () => {
-        console.log('User clicked "Previous Track" icon.');
         skipBackward();
       });
       navigator.mediaSession.setActionHandler('play', () => {
-        console.log('User clicked "Play" icon.');
         togglePlay();
       });
       navigator.mediaSession.setActionHandler('pause', () => {
-        console.log('User clicked "Pause" icon.');
         togglePlay();
       });
     }
@@ -119,6 +115,8 @@
   function skipBackward() {
     playPreviousAudio();
   }
+
+  audio.addEventListener('ended',playNextAudio)
 
   // Fetch audio files from your REST API
   fetch(apiUrl)

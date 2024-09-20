@@ -84,10 +84,10 @@ public class AudioFileService {
 
         if (command.get(1).equals("--print")){
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
             StringBuilder output = new StringBuilder();
+            String line;
             while ((line = reader.readLine()) != null) {
-                output.append(line).append("\n");
+                output.append(line);
             }
             fileName = output.toString().trim();
         }
