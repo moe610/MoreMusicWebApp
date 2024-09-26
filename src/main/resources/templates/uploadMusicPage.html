@@ -4,72 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Upload Music Page</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
-<body>
+<body  class="body-dark-gray">
 
-<h2>Upload Music Page</h2>
+<div class="top-container">
+  <a th:href="@{/}" class="home-link" >Home</a>
+  <a th:href="@{/music}" class="another-link">Music</a>
+</div>
 
-<div class="container">
+<h2 class="title-40">Upload Music Page</h2>
+
+<div class="upload-container">
   <div class="form-group">
-    <label for="youtubeUrl">YouTube URL:</label>
+    <label class="upload-label" for="youtubeUrl">YouTube URL:</label>
     <input type="text" id="youtubeUrl" class="form-control">
   </div>
   <button id="submitButton" class="btn btn-primary">Submit</button>
   <div id="message" class="alert mt-3" style="display: none;"></div>
 </div>
 
-<script>
-  const currentPath = window.location.pathname;
-  const contextPath = currentPath.split('/')[1];
-  const apiUrl = `/${contextPath}/api/v1/uploadAudioFiles`;
-
-  document.getElementById('submitButton').addEventListener('click', function () {
-    const youtubeUrl = document.getElementById('youtubeUrl').value;
-    const messageElement = document.getElementById('message');
-    const submitButton = document.getElementById('submitButton');
-
-    messageElement.textContext = '';
-    messageElement.style.display = 'none';
-
-    if (!youtubeUrl) {
-      messageElement.textContent = 'Please enter a YouTube URL.';
-      messageElement.className = 'alert alert-danger mt-3';
-      messageElement.style.display = 'block';
-      return;
-    }
-
-    submitButton.disabled = true;
-    submitButton.classList.add('disabled');
-
-    fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ youtubeUrl: youtubeUrl })
-    })
-            .then(response => {
-              if (response.ok) {
-                messageElement.textContent = 'Audio file uploaded successfully!';
-                messageElement.className = 'alert alert-success mt-3';
-              } else {
-                return response.text().then(text => {
-                  throw new Error(text);
-                });
-              }
-            })
-            .catch(error => {
-              messageElement.textContent = `Error: ${error.message}`;
-              messageElement.className = 'alert alert-danger mt-3';
-            })
-            .finally(() => {
-              messageElement.style.display = 'block';
-              submitButton.disabled = false;
-              submitButton.classList.remove('disabled');
-            });
-  });
-</script>
+<script th:src="@{/scripts/UploadMusic.js}"></script>
 
 </body>
 </html>

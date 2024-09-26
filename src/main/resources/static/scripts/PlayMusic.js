@@ -6,7 +6,7 @@ const playButton = document.getElementById('play-button');
 const nextButton = document.getElementById('next-button');
 const previousButton = document.getElementById('previous-button');
 
-let audioFiles = []; // Initialize empty array
+let audioFiles = [];
 let shuffledIndices = [];
 let currentIndex = 0;
 let currentShuffleIndex = 0;
@@ -40,7 +40,7 @@ function loadAudioFile(index) {
     if (index >= 0 && index < audioFiles.length) {
         const newFile = audioFiles[index];
         const audioSource = document.getElementById('audio-source');
-        audioSource.src = '/MusicFiles/' + encodeURIComponent(newFile.fileName);
+        audioSource.src = '/' + contextPath + '/MusicFiles/' + encodeURIComponent(newFile.fileName); //remove MoreMusicWebApp just for testing
 
         document.title = newFile.title;
 
@@ -96,7 +96,6 @@ function skipBackward() {
 
 audio.addEventListener('ended',playNextAudio)
 
-// Fetch audio files from your REST API
 fetch(apiUrl)
     .then(response => response.json())
     .then(files => {

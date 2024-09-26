@@ -7,12 +7,18 @@
   <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body class="body-dark-gray">
+
+<div class="top-container">
+  <a th:href="@{/}" class="home-link" >Home</a>
+  <a th:href="@{/upload}" class="another-link">Upload</a>
+</div>
+
 <div>
   <h2 class="title-40">Music Page</h2>
 </div>
 
 <div class="audio-container">
-  <audio controls id="audio-player" mediagroup="audioGroup">
+  <audio controls id="audio-player" preload="auto" mediagroup="audioGroup">
     <source src="" type="audio/aac" id="audio-source">
     Your browser does not support the audio element.
   </audio>
@@ -28,10 +34,6 @@
 <!-- Scrollable list of audio files -->
 <div class="audio-list" id="audio-list"></div>
 
-<div>
-  <a class="link-40" th:href="@{/upload}">Upload Music</a>
-</div>
-
-<script th:src="@{/scripts/playmusic.js}"></script>
+<script th:src="@{/scripts/PlayMusic.js}"></script>
 </body>
 </html>

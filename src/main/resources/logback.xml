@@ -1,0 +1,27 @@
+<configuration>
+
+    <!-- Define the log file directory and name -->
+    <property name="LOG_DIR" value="C:/Program Files/Apache Software Foundation/Tomcat 10.1/logs" />
+
+    <!-- Console Appender: For logging to console -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- File Appender: For logging to a file -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <!-- Use the LOG_DIR property to specify the file path -->
+        <file>${LOG_DIR}/app.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Root logger configuration -->
+    <root level="info">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>

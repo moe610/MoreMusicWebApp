@@ -4,6 +4,8 @@ import com.moremusic.moremusicwebapp.datalayer.AudioFileModel;
 import com.moremusic.moremusicwebapp.datalayer.AudioFiles;
 import com.moremusic.moremusicwebapp.datalayer.repository.AudioFileRepository;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,8 @@ import java.util.List;
 
 @Service
 public class AudioFileService {
+    private static final Logger logger = LoggerFactory.getLogger(AudioFileService.class);
+
     private final AudioFileRepository audioFileRepository;
 
     @Value("${app.upload.dir}")
@@ -31,6 +35,9 @@ public class AudioFileService {
     }
 
     public AudioFileModel DownloadYoutubeVideo(String youtubeUrl) throws Exception {
+        logger.info("Downloading youtube video: {}", youtubeUrl);
+        logger.info("Upload directory: {}", uploadDir);
+
         youtubeUrl = GetVideoUrl(youtubeUrl);
         AudioFileModel audioFileModel = new AudioFileModel();
         String outputFilePath = uploadDir + File.separator + "%(title)s.m4a";
@@ -46,6 +53,7 @@ public class AudioFileService {
 
             createProcess(ytdlpCommand);
             ConvertAudioFileToAac(fileName);
+            logger.info("New filename: {}", fileName);
 
             audioFileModel.setFileName(fileName + ".aac");
             audioFileModel.setTitle(fileName);
@@ -71,8 +79,10 @@ public class AudioFileService {
             createProcess(ffmpegCommand);
         }
 
-        if (inputFile.exists())
+        if (inputFile.exists()){
             inputFile.delete();
+            logger.info("File {} deleted", fileName);
+        }
     }
 
     private void createProcess(List<String> command) throws IOException, InterruptedException {
