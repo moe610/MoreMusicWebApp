@@ -36,11 +36,19 @@ function playPreviousAudio() {
     loadAudioFile(currentIndex);
 }
 
+function skipForward() {
+    playNextAudio();
+}
+
+function skipBackward() {
+    playPreviousAudio();
+}
+
 function loadAudioFile(index) {
     if (index >= 0 && index < audioFiles.length) {
         const newFile = audioFiles[index];
         const audioSource = document.getElementById('audio-source');
-        audioSource.src = '/' + contextPath + '/MusicFiles/' + encodeURIComponent(newFile.fileName); //remove MoreMusicWebApp just for testing
+        audioSource.src = '/' + contextPath + '/MusicFiles/' + encodeURIComponent(newFile.fileName);
 
         document.title = newFile.title;
 
@@ -84,14 +92,6 @@ function updateMediaSessionMetadata(audioFile) {
             togglePlay();
         });
     }
-}
-
-function skipForward() {
-    playNextAudio();
-}
-
-function skipBackward() {
-    playPreviousAudio();
 }
 
 audio.addEventListener('ended',playNextAudio)
