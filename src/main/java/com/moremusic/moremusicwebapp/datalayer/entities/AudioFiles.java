@@ -1,4 +1,4 @@
-package com.moremusic.moremusicwebapp.datalayer;
+package com.moremusic.moremusicwebapp.datalayer.entities;
 
 import jakarta.persistence.*;
 
@@ -72,17 +72,13 @@ public class AudioFiles {
         this.filePath = filePath;
     }
 
-    public String getFileType() {
-        return fileType;
-    }
+    public String getFileType() { return fileType; }
 
     public void setFileType(String fileType) {
         this.fileType = fileType;
     }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getTitle() { return title; }
 
     public void setTitle(String title) {
         this.title = title;

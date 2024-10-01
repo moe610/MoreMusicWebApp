@@ -1,6 +1,6 @@
 package com.moremusic.moremusicwebapp.controllers;
 
-import com.moremusic.moremusicwebapp.datalayer.AudioFileModel;
+import com.moremusic.moremusicwebapp.datalayer.models.AudioFileModel;
 import com.moremusic.moremusicwebapp.services.AudioFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
