@@ -6,10 +6,7 @@ import com.moremusic.moremusicwebapp.datalayer.RegisterRequest;
 import com.moremusic.moremusicwebapp.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -26,5 +23,10 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> Authenticate(@RequestBody AuthenticationRequest request){
         return ResponseEntity.ok(authenticationService.Authenticate(request));
+    }
+
+    @GetMapping("/validate")
+    public ResponseEntity<ResponseEntity<String>> Validate(@RequestHeader("Authorization") String authorizationHeader){
+        return ResponseEntity.ok(authenticationService.Validate(authorizationHeader));
     }
 }

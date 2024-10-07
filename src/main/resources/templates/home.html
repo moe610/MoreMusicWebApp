@@ -2,9 +2,14 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Home Page</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/scripts/Validate.js}"></script>
+    <script>
+        validateJwtToken()
+    </script>
 </head>
-<body>
-<h1>Welcome to the Home Page</h1>
-<a th:href="@{/music}">Go to Music Page</a>
+<body class="body-dark-gray">
+<h1 class="title-40">More Music Web Application</h1>
+<a class="button-40" th:href="@{/music}">Go to Music Page</a>
 </body>
 </html>

@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Music Page</title>
   <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <script th:src="@{/scripts/Validate.js}"></script>
+  <script>
+    validateJwtToken()
+  </script>
 </head>
 <body class="body-dark-gray">
 
@@ -30,8 +34,6 @@
 <button class="button-40" role="button" id="next-button">Next</button>
 </div>
 
-
-<!-- Scrollable list of audio files -->
 <div class="audio-list" id="audio-list"></div>
 
 <script th:src="@{/scripts/PlayMusic.js}"></script>

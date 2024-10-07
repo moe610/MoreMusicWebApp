@@ -7,8 +7,10 @@ import com.moremusic.moremusicwebapp.datalayer.entities.ApplicationUser;
 import com.moremusic.moremusicwebapp.datalayer.enums.ApplicationUserRole;
 import com.moremusic.moremusicwebapp.datalayer.repository.ApplicationUserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,5 +47,17 @@ public class AuthenticationService {
         var user = applicationUserRepository.findByUsername(request.getUserName()).orElseThrow();
         var jwtToken = jwtService.GenerateToken(user);
         return AuthenticationResponse.builder().token(jwtToken).build();
+    }
+
+    public ResponseEntity<String> Validate(String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        final String userName = jwtService.ExtractUserName(token);
+        UserDetails userDetails = applicationUserRepository.findByUsername(userName).orElseThrow();
+
+        if(jwtService.isTokenValid(token, userDetails)) {
+            return ResponseEntity.ok().body(jwtService.ExtractUserName(token));
+        } else {
+            return ResponseEntity.status(403).body("Invalid Token");
+        }
     }
 }

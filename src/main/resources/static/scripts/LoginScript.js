@@ -4,6 +4,8 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
     const currentPath = window.location.pathname;
     const contextPath = currentPath.split('/')[1];
     const apiUrl = `/${contextPath}/api/v1/auth/authenticate`;
+    const apiUrlHome = `/${contextPath}/`;
+
     const userName = document.getElementById("userName").value;
     const password = document.getElementById("password").value;
 
@@ -22,18 +24,22 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
         });
 
         if (!response.ok) {
-            throw new Error("Failed to authenticate");
+            throw new Error("Failed to authenticate. Please check your username and password.");
         }
 
         const data = await response.json();
-        const token = data.token; // Assuming your response JSON contains a 'token' field
+        const token = data.token;
 
-        // Store the token in localStorage
         localStorage.setItem("jwtToken", token);
 
-        alert("Login successful! Token stored in localStorage.");
-        window.location.href = "/dashboard"; // Redirect to the dashboard or some other page
+        if (token != null) {
+            window.location.href = apiUrlHome;
+        } else {
+            throw new Error('Token validation failed. Please log in again.');
+        }
+
     } catch (error) {
+        console.error('Login error:', error);
         document.getElementById("error-message").textContent = "Login failed: " + error.message;
         document.getElementById("error-message").style.display = "block";
     }

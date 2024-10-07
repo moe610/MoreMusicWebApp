@@ -1,6 +1,5 @@
-const currentPath = window.location.pathname;
-const contextPath = currentPath.split('/')[1];
 const apiUrl = `/${contextPath}/api/v1/audioFiles`;
+const token = localStorage.getItem('jwtToken');
 const audio = document.getElementById('audio-player');
 const playButton = document.getElementById('play-button');
 const nextButton = document.getElementById('next-button');
@@ -96,34 +95,48 @@ function skipBackward() {
 
 audio.addEventListener('ended',playNextAudio)
 
-fetch(apiUrl)
-    .then(response => response.json())
-    .then(files => {
-        audioFiles = files;
-        shuffledIndices = shuffleArrayIndices(audioFiles.length);
-        currentIndex = 0;
-        currentShuffleIndex = 0;
 
-        playButton.addEventListener('click', togglePlay);
-        nextButton.addEventListener('click', playNextAudio);
-        previousButton.addEventListener('click', playPreviousAudio);
-
-        // Populate the scrollable list
-        const audioList = document.getElementById('audio-list');
-        audioFiles.forEach((file, index) => {
-            const listItem = document.createElement('div');
-            listItem.className = 'audio-item';
-            listItem.textContent = file.title; // Display the title
-            listItem.onclick = () => {
-                currentIndex = index; // Set the current index
-                loadAudioFile(currentIndex); // Load the selected audio file
-            };
-            audioList.appendChild(listItem); // Add item to the list
-        });
-
-        // Initialize media session metadata
-        if (audioFiles.length > 0) {
-            loadAudioFile(currentIndex);
+if (token) {
+    fetch(apiUrl, {
+        headers: {
+            'Authorization': `Bearer ${token}` // Include the token in the Authorization header
         }
     })
+    .then(response => {
+        if(!response.ok){
+            throw new Error('Failed to fetch audio files');
+        }
+        return response.json();
+    })
+    .then(files => {
+    audioFiles = files;
+    shuffledIndices = shuffleArrayIndices(audioFiles.length);
+    currentIndex = 0;
+    currentShuffleIndex = 0;
+
+    playButton.addEventListener('click', togglePlay);
+    nextButton.addEventListener('click', playNextAudio);
+    previousButton.addEventListener('click', playPreviousAudio);
+
+    // Populate the scrollable list
+    const audioList = document.getElementById('audio-list');
+    audioFiles.forEach((file, index) => {
+        const listItem = document.createElement('div');
+        listItem.className = 'audio-item';
+        listItem.textContent = file.title; // Display the title
+        listItem.onclick = () => {
+            currentIndex = index; // Set the current index
+            loadAudioFile(currentIndex); // Load the selected audio file
+        };
+        audioList.appendChild(listItem); // Add item to the list
+    });
+
+    // Initialize media session metadata
+    if (audioFiles.length > 0) {
+        loadAudioFile(currentIndex);
+    }
+})
     .catch(error => console.error('Error fetching audio files:', error));
+} else{
+    console.error("No JWT token found in localstorage");
+}
