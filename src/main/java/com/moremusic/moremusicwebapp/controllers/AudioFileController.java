@@ -1,6 +1,6 @@
 package com.moremusic.moremusicwebapp.controllers;
 
-import com.moremusic.moremusicwebapp.datalayer.AudioFiles;
+import com.moremusic.moremusicwebapp.datalayer.entities.AudioFiles;
 import com.moremusic.moremusicwebapp.services.AudioFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

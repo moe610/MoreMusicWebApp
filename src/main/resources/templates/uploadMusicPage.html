@@ -6,6 +6,10 @@
   <title>Upload Music Page</title>
   <link rel="stylesheet" th:href="@{/css/styles.css}">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script th:src="@{/scripts/Validate.js}"></script>
+  <script>
+    validateJwtToken()
+  </script>
 </head>
 <body  class="body-dark-gray">
 
@@ -26,6 +30,5 @@
 </div>
 
 <script th:src="@{/scripts/UploadMusic.js}"></script>
-
 </body>
 </html>

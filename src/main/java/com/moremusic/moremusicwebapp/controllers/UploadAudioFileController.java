@@ -1,7 +1,8 @@
 package com.moremusic.moremusicwebapp.controllers;
 
-import com.moremusic.moremusicwebapp.datalayer.AudioFileModel;
+import com.moremusic.moremusicwebapp.datalayer.models.AudioFileModel;
 import com.moremusic.moremusicwebapp.services.AudioFileService;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,13 +18,9 @@ public class UploadAudioFileController {
     public UploadAudioFileController(AudioFileService audioFileService) {
         this.audioFileService = audioFileService;
     }
+    @Getter
     public static class YoutubeUrlRequest {
         public String youtubeUrl;
-
-        // Add getters and setters
-        public String getYoutubeUrl() {
-            return youtubeUrl;
-        }
     }
 
     @PostMapping

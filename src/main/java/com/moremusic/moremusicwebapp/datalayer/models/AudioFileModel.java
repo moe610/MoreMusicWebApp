@@ -1,4 +1,4 @@
-package com.moremusic.moremusicwebapp.datalayer;
+package com.moremusic.moremusicwebapp.datalayer.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AudioFileModel {

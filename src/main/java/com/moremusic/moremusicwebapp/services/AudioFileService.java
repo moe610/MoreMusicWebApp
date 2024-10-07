@@ -1,7 +1,7 @@
 package com.moremusic.moremusicwebapp.services;
 
-import com.moremusic.moremusicwebapp.datalayer.AudioFileModel;
-import com.moremusic.moremusicwebapp.datalayer.AudioFiles;
+import com.moremusic.moremusicwebapp.datalayer.models.AudioFileModel;
+import com.moremusic.moremusicwebapp.datalayer.entities.AudioFiles;
 import com.moremusic.moremusicwebapp.datalayer.repository.AudioFileRepository;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
