@@ -9,6 +9,7 @@ let audioFiles = [];
 let shuffledIndices = [];
 let currentIndex = 0;
 let currentShuffleIndex = 0;
+let skipTime = 0;
 
 function togglePlay() {
     if (audio.paused) {
@@ -27,7 +28,18 @@ function playNextAudio() {
     currentShuffleIndex = (currentShuffleIndex + 1) % shuffledIndices.length;
     currentIndex = shuffledIndices[currentShuffleIndex];
     loadAudioFile(currentIndex);
+    skipTime = audioFiles[currentIndex].duration - 2;
 }
+
+// Add an event listener for when the audio starts playing
+audio.addEventListener('play', () => {
+    const interval = setInterval(() => {
+        if (!audio.paused && audio.currentTime >= skipTime) { // Check if 30 seconds have passed
+            clearInterval(interval); // Stop checking
+            playNextAudio(); // Skip to the next audio file
+        }
+    }, 1000); // Check every second
+});
 
 function playPreviousAudio() {
     currentShuffleIndex = (currentShuffleIndex - 1 + shuffledIndices.length) % shuffledIndices.length;
@@ -42,6 +54,8 @@ function skipForward() {
 function skipBackward() {
     playPreviousAudio();
 }
+
+
 
 function loadAudioFile(index) {
     if (index >= 0 && index < audioFiles.length) {
@@ -93,8 +107,10 @@ function updateMediaSessionMetadata(audioFile) {
     }
 }
 
-audio.addEventListener('ended',playNextAudio)
-
+// Add an event listener for when the audio ends
+audio.addEventListener('ended', () => {
+    nextButton.click(); // Simulate user click on the next button when audio ends
+});
 
 if (token) {
     fetch(apiUrl, {
@@ -134,6 +150,7 @@ if (token) {
     // Initialize media session metadata
     if (audioFiles.length > 0) {
         loadAudioFile(currentIndex);
+        skipTime = audioFiles[currentIndex].duration - 2;
     }
 })
     .catch(error => console.error('Error fetching audio files:', error));
