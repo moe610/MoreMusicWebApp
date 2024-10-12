@@ -28,6 +28,7 @@ function playNextAudio() {
     currentShuffleIndex = (currentShuffleIndex + 1) % shuffledIndices.length;
     currentIndex = shuffledIndices[currentShuffleIndex];
     loadAudioFile(currentIndex);
+    skipTime = audioFiles[currentIndex].duration - 2;
 }
 
 // Add an event listener for when the audio starts playing
