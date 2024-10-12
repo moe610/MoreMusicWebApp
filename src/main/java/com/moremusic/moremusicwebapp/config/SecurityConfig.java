@@ -27,8 +27,7 @@ public class SecurityConfig {
                                         "/scripts/**",
                                         "/css/**",
                                         "/images/**",
-                                        "/",
-                                        "/**").permitAll()  // Permit all requests to /api/v1/auth/**
+                                        "/","/**").permitAll()  // Permit all requests to /api/v1/auth/**
                                 .anyRequest().authenticated()// All other requests must be authenticated
                 )
                 .authenticationProvider(authenticationProvider)

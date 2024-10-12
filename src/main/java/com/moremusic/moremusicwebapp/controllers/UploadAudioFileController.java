@@ -3,6 +3,8 @@ package com.moremusic.moremusicwebapp.controllers;
 import com.moremusic.moremusicwebapp.datalayer.models.AudioFileModel;
 import com.moremusic.moremusicwebapp.services.AudioFileService;
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "api/v1/uploadAudioFiles")
 public class UploadAudioFileController {
+    private static final Logger logger = LoggerFactory.getLogger(UploadAudioFileController.class);
+
     private final AudioFileService audioFileService;
 
     @Autowired
@@ -24,17 +28,18 @@ public class UploadAudioFileController {
     }
 
     @PostMapping
-    public void UploadAudioFile(@RequestBody YoutubeUrlRequest request) {
+    public void UploadAudioFile(@RequestBody YoutubeUrlRequest request) throws Exception {
         try {
             AudioFileModel audioFileModel = audioFileService.DownloadYoutubeVideo(request.getYoutubeUrl());
             if (audioFileModel == null)
-                throw new RuntimeException("Audio file already exists");
+                throw new Exception("Audio file already exists");
 
             if (!audioFileService.SaveAudioFileToDatabase(audioFileModel))
-                throw new RuntimeException("Audio file could not be saved");
+                throw new Exception("Audio file could not be saved");
         }
         catch (Exception e) {
-            throw new RuntimeException(e);
+            logger.error(e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 }

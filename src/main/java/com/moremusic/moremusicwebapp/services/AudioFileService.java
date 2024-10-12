@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class AudioFileService {
@@ -24,6 +26,7 @@ public class AudioFileService {
     private static final String YTDLP_PATH = "yt-dlp";
     private static final String FFMPEG_PATH = "ffmpeg";
     private String fileName;
+    private Integer duration;
 
     @Autowired
     public AudioFileService(AudioFileRepository audioFileRepository) {
@@ -42,23 +45,25 @@ public class AudioFileService {
         AudioFileModel audioFileModel = new AudioFileModel();
         String outputFilePath = uploadDir + File.separator + "%(title)s.m4a";
 
-        // Construct commands
         List<String> fileNameCommand = List.of(YTDLP_PATH, "--print", "filename", "-o", "%(title)s", "--restrict-filenames", youtubeUrl);
         List<String> ytdlpCommand = List.of(YTDLP_PATH, "--extract-audio", "--audio-format", "m4a", "--restrict-filenames", "-o", outputFilePath, youtubeUrl);
 
         try{
             createProcess(fileNameCommand);
-            if(audioFileRepository.existsByFileName(fileName))
+            if(audioFileRepository.existsByFileName(fileName)){
+                logger.error("File already exists.");
                 throw new Exception("File already exists");
+            }
 
             createProcess(ytdlpCommand);
             ConvertAudioFileToAac(fileName);
             logger.info("New filename: {}", fileName);
 
-            audioFileModel.setFileName(fileName + ".aac");
+            audioFileModel.setFileName(fileName + ".mp3");
             audioFileModel.setTitle(fileName);
-            audioFileModel.setFilePath(uploadDir + File.separator + fileName + ".aac");
-            audioFileModel.setFileType("aac");
+            audioFileModel.setFilePath(uploadDir + File.separator + fileName + ".mp3");
+            audioFileModel.setFileType("mp3");
+            audioFileModel.setDuration(duration);
         }
         catch (IOException e){
             throw new IOException(e.getMessage());
@@ -70,13 +75,16 @@ public class AudioFileService {
         return audioFileModel;
     }
 
-    private void ConvertAudioFileToAac(String fileName) throws IOException, InterruptedException {
+    private void ConvertAudioFileToAac(String fileName) throws Exception {
         File inputFile = new File(uploadDir + File.separator + fileName + ".m4a");
-        File outputFile = new File(uploadDir + File.separator + fileName + ".aac");
+        File outputFile = new File(uploadDir + File.separator + fileName + ".mp3");
 
         if (!outputFile.exists()){
-            List<String> ffmpegCommand = List.of(FFMPEG_PATH, "-i", inputFile.getAbsolutePath(), "-c:a", "aac", outputFile.getAbsolutePath());
+            List<String> ffmpegCommand = List.of(FFMPEG_PATH, "-hide_banner", "-i", inputFile.getAbsolutePath(), "-c:a", "mp3", outputFile.getAbsolutePath());
             createProcess(ffmpegCommand);
+        } else{
+            logger.error("Audio file already exists.");
+            throw new Exception("Audio file already exists.");
         }
 
         if (inputFile.exists()){
@@ -85,12 +93,15 @@ public class AudioFileService {
         }
     }
 
-    private void createProcess(List<String> command) throws IOException, InterruptedException {
+    private void createProcess(List<String> command) throws Exception {
         ProcessBuilder processBuilder = new ProcessBuilder(command);
-        if (!command.get(1).equals("--print"))
-            processBuilder.inheritIO();
-
         Process process = processBuilder.start();
+
+        int exitCode = process.waitFor();
+        if (exitCode != 0) {
+            logger.error("Process builder failed, process exited with code: {}", exitCode);
+            throw new Exception("Process builder failed, process exited with code: " + exitCode);
+        }
 
         if (command.get(1).equals("--print")){
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -102,7 +113,54 @@ public class AudioFileService {
             fileName = output.toString().trim();
         }
 
-        process.waitFor();
+        if(command.get(1).equals("-hide_banner")){
+            processBuilder.redirectErrorStream(true);
+            StringBuilder output = new StringBuilder();
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    output.append(line).append("\n");
+                }
+            }
+
+            if (output.isEmpty()) {
+                logger.error("FFmpeg output is empty.");
+            }
+
+            duration = extractDuration(output.toString());
+            if (duration < 0) {
+                logger.error("Duration not found in output");
+            }
+        }
+    }
+
+    private Integer extractDuration(String output) {
+        // Regular expression to match the duration line
+        Pattern pattern = Pattern.compile("time=(\\d{2}:\\d{2}:\\d{2}\\.\\d{2})");
+        Matcher matcher = pattern.matcher(output);
+        String lastMatchedDuration = null;
+        Integer totalSeconds = null;
+
+        while (matcher.find()) {
+            lastMatchedDuration = matcher.group(1);
+        }
+
+        if (lastMatchedDuration == null) {
+            return totalSeconds;
+        }
+
+        String[] hms = lastMatchedDuration.split(":");
+
+        String[] secMillis = hms[2].split("\\.");
+
+        int hours = Integer.parseInt(hms[0]);
+        int minutes = Integer.parseInt(hms[1]);
+        int seconds = Integer.parseInt(secMillis[0]);
+
+        totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+
+        return totalSeconds;
     }
 
     private @NotNull String GetVideoUrl(@NotNull String youtubeUrl){
@@ -126,6 +184,7 @@ public class AudioFileService {
             audioFiles.setTitle(audioFileModel.getTitle());
             audioFiles.setFilePath(audioFileModel.getFilePath());
             audioFiles.setFileType(audioFileModel.getFileType());
+            audioFiles.setDuration(audioFileModel.getDuration());
 
             audioFileRepository.save(audioFiles);
 
