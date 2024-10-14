@@ -20,6 +20,11 @@ public class WebController {
         return "login";
     }
 
+    @GetMapping("/register")
+    public String registerPage(Model model) {
+        return "register";
+    }
+
     @GetMapping("/music")
     public String musicPage(){
         logger.info("Serving music page.");
