@@ -27,7 +27,7 @@ public class AudioFileController {
     public List<AudioFiles> getAudioFiles(){
         logger.info("Retrieving audio files.");
         try{
-            return audioFileService.getAudioFiles();
+            return audioFileService.getAudioFilesForCurrentUser();
         }
         catch(Exception e){
             logger.error(e.getMessage());

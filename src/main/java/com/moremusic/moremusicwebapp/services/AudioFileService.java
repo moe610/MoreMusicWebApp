@@ -1,7 +1,10 @@
 package com.moremusic.moremusicwebapp.services;
 
+import com.moremusic.moremusicwebapp.datalayer.entities.ApplicationUser;
+import com.moremusic.moremusicwebapp.datalayer.entities.ApplicationUserPlaylist;
 import com.moremusic.moremusicwebapp.datalayer.models.AudioFileModel;
 import com.moremusic.moremusicwebapp.datalayer.entities.AudioFiles;
+import com.moremusic.moremusicwebapp.datalayer.repository.ApplicationUserPlaylistRepository;
 import com.moremusic.moremusicwebapp.datalayer.repository.AudioFileRepository;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -20,6 +23,8 @@ public class AudioFileService {
     private static final Logger logger = LoggerFactory.getLogger(AudioFileService.class);
 
     private final AudioFileRepository audioFileRepository;
+    private final ApplicationUserService applicationUserService;
+    private final ApplicationUserPlaylistRepository applicationUserPlaylistRepository;
 
     @Value("${app.upload.dir}")
     private String uploadDir;
@@ -29,12 +34,16 @@ public class AudioFileService {
     private Integer duration;
 
     @Autowired
-    public AudioFileService(AudioFileRepository audioFileRepository) {
+    public AudioFileService(AudioFileRepository audioFileRepository, ApplicationUserService applicationUserService, ApplicationUserPlaylistRepository applicationUserPlaylistRepository) {
         this.audioFileRepository = audioFileRepository;
+        this.applicationUserService = applicationUserService;
+        this.applicationUserPlaylistRepository = applicationUserPlaylistRepository;
     }
 
-    public List<AudioFiles> getAudioFiles() {
-        return audioFileRepository.findAll();
+    public List<AudioFiles> getAudioFilesForCurrentUser() {
+        ApplicationUser currentUser = applicationUserService.getCurrentUser();
+
+        return audioFileRepository.findByUserPlaylist(currentUser.getId());
     }
 
     public AudioFileModel DownloadYoutubeVideo(String youtubeUrl) throws Exception {
@@ -175,7 +184,7 @@ public class AudioFileService {
         return youtubeUrl.substring(0,nextParamIndex);
     }
 
-    public boolean SaveAudioFileToDatabase(AudioFileModel audioFileModel){
+    public boolean SaveAudioFileToDatabase(AudioFileModel audioFileModel) throws Exception {
         boolean success = false;
 
         try{
@@ -188,11 +197,25 @@ public class AudioFileService {
 
             audioFileRepository.save(audioFiles);
 
+            SaveAudioFileToUserPlaylist(audioFiles.getId());
+
             success = true;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new Exception(e);
         }
-
         return success;
+    }
+
+    public void SaveAudioFileToUserPlaylist(long audioFileId) throws Exception {
+        try{
+            ApplicationUserPlaylist applicationUserPlaylistserplaylist = new ApplicationUserPlaylist();
+            applicationUserPlaylistserplaylist.setAudioFileId(audioFileId);
+            applicationUserPlaylistserplaylist.setApplicationUserId(applicationUserService.getCurrentUser().getId());
+
+            applicationUserPlaylistRepository.save(applicationUserPlaylistserplaylist);
+        }
+        catch (Exception e){
+            throw new Exception(e);
+        }
     }
 }
