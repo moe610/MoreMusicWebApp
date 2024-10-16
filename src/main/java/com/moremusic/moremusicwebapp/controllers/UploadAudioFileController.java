@@ -2,6 +2,7 @@ package com.moremusic.moremusicwebapp.controllers;
 
 import com.moremusic.moremusicwebapp.datalayer.models.AudioFileModel;
 import com.moremusic.moremusicwebapp.services.AudioFileService;
+import com.moremusic.moremusicwebapp.services.UploadMusicService;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +18,12 @@ public class UploadAudioFileController {
     private static final Logger logger = LoggerFactory.getLogger(UploadAudioFileController.class);
 
     private final AudioFileService audioFileService;
+    private final UploadMusicService uploadMusicService;
 
     @Autowired
-    public UploadAudioFileController(AudioFileService audioFileService) {
+    public UploadAudioFileController(AudioFileService audioFileService, UploadMusicService uploadMusicService) {
         this.audioFileService = audioFileService;
+        this.uploadMusicService = uploadMusicService;
     }
     @Getter
     public static class YoutubeUrlRequest {
@@ -30,7 +33,7 @@ public class UploadAudioFileController {
     @PostMapping
     public void UploadAudioFile(@RequestBody YoutubeUrlRequest request) throws Exception {
         try {
-            AudioFileModel audioFileModel = audioFileService.DownloadYoutubeVideo(request.getYoutubeUrl());
+            AudioFileModel audioFileModel = uploadMusicService.DownloadYoutubeVideo(request.getYoutubeUrl());
             if (audioFileModel == null)
                 throw new Exception("Audio file already exists");
 

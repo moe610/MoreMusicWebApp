@@ -60,13 +60,22 @@
     font-weight: bold;
 }
 
-.another-link{
+.upload-link{
     color:#3BBA9C;
     text-decoration: none;
     font-family: "Inter var",ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
     font-size: 1.25rem;
     font-weight: bold;
-    padding-right: 40px;
+    padding-right: 10%;
+}
+
+.music-link{
+    color:#3BBA9C;
+    text-decoration: none;
+    font-family: "Inter var",ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: 1.25rem;
+    font-weight: bold;
+    padding-right: 0%;
 }
 
 .home-link:hover, .another-link:hover {
