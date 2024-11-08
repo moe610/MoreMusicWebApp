@@ -1,7 +1,9 @@
-const apiAudioFiles = `/${contextPath}/api/v1/audioFiles`;
+const apiAudioFiles = `/${contextPath}/api/v1/audioFiles/files`;
 const apiShuffleAudioFiles = `/${contextPath}/api/v1/audioFiles/shuffle`;
-const apiUserPlaylists = `/${contextPath}/api/v1/audioFiles/userPlaylists`;
 const apiAudioFilesForUserPlaylist = `/${contextPath}/api/v1/audioFiles/audioFilesForUserPlaylist`;
+const apiUserNames = `/${contextPath}/api/v1/applicationUsers/userNames`;
+const apiCurrentUser = `/${contextPath}/api/v1/applicationUsers/currentUser`;
+
 const token = localStorage.getItem('jwtToken');
 const audio = document.getElementById('audio-player');
 const playButton = document.getElementById('play-button');
@@ -13,7 +15,8 @@ const st = {};
 let audioFiles = [];
 let currentIndex = 0;
 let skipTime = 0;
-let userPlayListId = 0;
+let userId = null;
+let userName = null;
 
 function togglePlay() {
     if (audio.paused) {
@@ -166,10 +169,10 @@ st.flap.addEventListener('transitionend', () => {
     }
 })
 
-st.clickHandler = (e) => {
-    if (e.target.tagName === 'LABEL') {
+st.clickHandler = (shuffleToggle) => {
+    if (shuffleToggle.target.tagName === 'LABEL') {
         setTimeout(() => {
-            st.flap.children[0].textContent = e.target.textContent;
+            st.flap.children[0].textContent = shuffleToggle.target.textContent;
         }, 250);
     }
 }
@@ -178,7 +181,33 @@ document.addEventListener('DOMContentLoaded', () => {
     st.flap.children[0].textContent = st.playToggle.nextElementSibling.textContent;
 });
 
-document.addEventListener('click', (e) => st.clickHandler(e));
+document.addEventListener('click', (shuffleToggle) => st.clickHandler(shuffleToggle));
+
+document.getElementById('shuffle-toggle').addEventListener('change', function() {
+    shuffleAudioFiles(this.checked);
+});
+document.getElementById('play-toggle').addEventListener('change', function() {
+    shuffleAudioFiles(!this.checked);
+});
+
+function shuffleAudioFiles(shuffleOn){
+    fetch(`${apiShuffleAudioFiles}/${userId}/${shuffleOn}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch audio files');
+            }
+            return response.json();
+        })
+        .then(files => {
+            audioFileMapping(files);
+        })
+        .catch(error => console.error('Error fetching audio files:', error));
+}
+
 
 //playlist dropdown
 function show(username) {
@@ -187,8 +216,7 @@ function show(username) {
 
 async function populateDropdown(){
     try {
-        // Fetch the data from the API
-        const response = await fetch(apiUserPlaylists);
+        const response = await fetch(apiUserNames);
         const users = await response.json();
 
         // Select the options container
@@ -202,8 +230,14 @@ async function populateDropdown(){
             const option = document.createElement('div');
             option.textContent = user.username; // Assuming 'username' is the field you want
             option.onmouseover = () => show(user.username);
-            // When clicking an option, fetch the audio files for the user
-            option.onclick = () => fetchAudioFilesForUser(user.id);
+
+            // When clicking an option, set userId and username, then fetch audio files
+            option.onclick = () => {
+                userId = user.id;
+                userName = user.username;
+                fetchAudioFilesForUser();
+            };
+
             optionsContainer.appendChild(option);
         });
     } catch (error) {
@@ -220,7 +254,7 @@ dropdown.onclick = function(){
 document.addEventListener('DOMContentLoaded', populateDropdown);
 
 // get playlist for user selected in dropdown
-function fetchAudioFilesForUser(userId){
+function fetchAudioFilesForUser(){
     fetch(`${apiAudioFilesForUserPlaylist}/${userId}`, { // Append the userId to the API URL
         headers: {
             'Authorization': `Bearer ${token}`
@@ -238,28 +272,6 @@ function fetchAudioFilesForUser(userId){
         .catch(error => console.error('Error fetching audio files:', error));
 }
 
-// Toggle to switch to shuffle
-document.getElementById('shuffle-toggle').addEventListener('change', function() {
-    if (this.checked) {
-        // If the toggle is on, fetch shuffled audio files
-        fetch(apiShuffleAudioFiles, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch audio files');
-                }
-                return response.json();
-            })
-            .then(files => {
-                audioFileMapping(files);
-            })
-            .catch(error => console.error('Error fetching audio files:', error));
-    }
-});
-
 if (token) {
     fetch(apiAudioFiles, {
         headers: {
@@ -276,6 +288,23 @@ if (token) {
         audioFileMapping(files);
     })
     .catch(error => console.error('Error fetching audio files:', error));
+
+    fetch(apiCurrentUser, {
+        headers: {
+            'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+        }
+    })
+        .then(response => {
+            if(!response.ok){
+                throw new Error('Failed to fetch audio files');
+            }
+            return response.json();
+        })
+        .then(user => {
+            userId = user.id;
+            userName = user.username;
+        })
+        .catch(error => console.error('Error fetching current user:', error));
 } else{
     console.error("No JWT token found in localstorage");
 }

@@ -1,8 +1,6 @@
 package com.moremusic.moremusicwebapp.controllers;
 
-import com.moremusic.moremusicwebapp.datalayer.entities.ApplicationUser;
 import com.moremusic.moremusicwebapp.datalayer.entities.AudioFiles;
-import com.moremusic.moremusicwebapp.services.ApplicationUserService;
 import com.moremusic.moremusicwebapp.services.AudioFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,15 +18,13 @@ public class AudioFileController {
     private static final Logger logger = LoggerFactory.getLogger(AudioFileController.class);
 
     private final AudioFileService audioFileService;
-    private final ApplicationUserService applicationUserService;
 
     @Autowired
-    public AudioFileController(AudioFileService audioFileService, ApplicationUserService applicationUserService) {
+    public AudioFileController(AudioFileService audioFileService) {
         this.audioFileService = audioFileService;
-        this.applicationUserService = applicationUserService;
     }
 
-    @GetMapping
+    @GetMapping("/files")
     public List<AudioFiles> getAudioFiles(){
         logger.info("Retrieving audio files.");
         try{
@@ -40,23 +36,11 @@ public class AudioFileController {
         }
     }
 
-    @GetMapping("/shuffle")
-    public List<AudioFiles> getAudioFilesShuffle(){
+    @GetMapping("/shuffle/{userId}/{shuffleOn}")
+    public List<AudioFiles> getAudioFilesShuffle(@PathVariable long userId, @PathVariable boolean shuffleOn){
         logger.info("Retrieving shuffled audio files.");
         try{
-            return audioFileService.getShuffledAudioFilesForCurrentUser();
-        }
-        catch(Exception e){
-            logger.error(e.getMessage());
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-    @GetMapping("/userPlaylists")
-    public List<ApplicationUser> getUserPlaylists(){
-        logger.info("Retrieving list of users playlists.");
-        try{
-            return applicationUserService.getAllUsers();
+            return audioFileService.getShuffledAudioFilesForUser(userId, shuffleOn);
         }
         catch(Exception e){
             logger.error(e.getMessage());

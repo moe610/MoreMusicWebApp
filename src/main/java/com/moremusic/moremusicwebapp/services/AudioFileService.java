@@ -38,10 +38,13 @@ public class AudioFileService {
         return audioFileRepository.findByUserPlaylist(userId);
     }
 
-    public List<AudioFiles> getShuffledAudioFilesForCurrentUser() {
-        ApplicationUser currentUser = applicationUserService.getCurrentUser();
-        List<AudioFiles> audioFiles = audioFileRepository.findByUserPlaylist(currentUser.getId());
-        Collections.shuffle(audioFiles);
+    public List<AudioFiles> getShuffledAudioFilesForUser(long userId, boolean shuffleOn) {
+        List<AudioFiles> audioFiles = audioFileRepository.findByUserPlaylist(userId);
+
+        if (shuffleOn) {
+            Collections.shuffle(audioFiles);
+        }
+
         return audioFiles;
     }
 
