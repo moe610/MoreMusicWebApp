@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Collections;
 
 @Service
 public class AudioFileService {
@@ -31,6 +32,17 @@ public class AudioFileService {
     public List<AudioFiles> getAudioFilesForCurrentUser() {
         ApplicationUser currentUser = applicationUserService.getCurrentUser();
         return audioFileRepository.findByUserPlaylist(currentUser.getId());
+    }
+
+    public List<AudioFiles> getAudioFilesForPlaylistUser(long userId){
+        return audioFileRepository.findByUserPlaylist(userId);
+    }
+
+    public List<AudioFiles> getShuffledAudioFilesForCurrentUser() {
+        ApplicationUser currentUser = applicationUserService.getCurrentUser();
+        List<AudioFiles> audioFiles = audioFileRepository.findByUserPlaylist(currentUser.getId());
+        Collections.shuffle(audioFiles);
+        return audioFiles;
     }
 
     public boolean SaveAudioFileToDatabase(AudioFileModel audioFileModel) throws Exception {

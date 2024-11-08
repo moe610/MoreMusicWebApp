@@ -200,6 +200,12 @@ audio {
     background-color: #f0f0f0;
 }
 
+.audio-item.active{
+    color:black;
+    font-weight:bold;
+    background-color: #f0f0f0;
+}
+
 
 .upload-container{
     background-color: #111827; /* Change background color */
@@ -263,5 +269,184 @@ audio {
 
 .upload-mt3{
     margin-top: 1rem !important;
+}
+
+/* selection option grid */
+.selection-container{
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+
+/* toggle */
+:root {
+    --accent: #04da97;
+    --border-width: 3px;
+    --border-radius: 55px;
+    --font-size: 16px;
+}
+
+.toggle-container {
+    margin: 15px;
+    text-align: center;
+    padding: 10px;
+}
+
+.toggle {
+    position: relative;
+    border: solid var(--border-width) var(--accent);
+    border-radius: var(--border-radius);
+    transition: transform cubic-bezier(0, 0, 0.30, 2) .4s;
+    transform-style: preserve-3d;
+}
+
+.toggle>input[type="radio"] {
+    display: none;
+}
+
+.toggle>#play-toggle:checked~#flap {
+    transform: rotateY(180deg);
+}
+
+.toggle>#play-toggle:checked~#flap>.content {
+    transform: rotateY(180deg);
+}
+
+.toggle>#shuffle-toggle:checked~#flap {
+    transform: rotateY(0deg);
+}
+
+.toggle>label {
+    display: inline-block;
+    min-width: 47%;
+    font-size: var(--font-size);
+    text-align: center;
+    color: var(--accent);
+    cursor: pointer;
+}
+
+.toggle>label,
+.toggle>#flap {
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.toggle>#flap {
+    position: absolute;
+    top: calc( 1px - var(--border-width));
+    left: 50%;
+    height: calc(88% + var(--border-width)* 2);
+    width: 51%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--font-size);
+    background-color: var(--accent);
+    border-top-right-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    transform-style: preserve-3d;
+    transform-origin: left;
+    transition: transform cubic-bezier(0.4, 0, 0.2, 1) .5s;
+}
+
+.toggle>#flap>.content {
+    color: #333;
+    transition: transform 0s linear .25s;
+    transform-style: preserve-3d;
+}
+
+/* Dropdown menu */
+@import url('https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900');
+.dropdown-container *{
+    box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
+    color:var(--accent);
+}
+
+.playlist{
+    background-color: #2E3047;
+    color:var(--accent);
+}
+
+.dropdown{
+    position: relative;
+    margin: 12px;
+    padding: 10px;
+    height: 50px;
+}
+
+.dropdown::before{
+    content: '';
+    position: absolute;
+    top:25px;
+    right: 28px;
+    width: 12px;
+    height: 2px;
+    background: #555;
+    z-index: 10;
+    transform: rotate(40deg);
+    transition: 0.5s;
+}
+.dropdown.active::before{
+    right:20px
+}
+
+.dropdown::after{
+    content: '';
+    position: absolute;
+    top:25px;
+    right: 20px;
+    width: 12px;
+    height: 2px;
+    background: #555;
+    z-index: 10;
+    transform: rotate(-40deg);
+    transition: 0.5s;
+}
+.dropdown.active::after{
+    right:28px
+}
+
+.dropdown input{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 16px;
+    outline: 5px solid var(--accent);
+    outline-offset: -5px;
+}
+
+.dropdown .option{
+    position: absolute;
+    top:55px;
+    width: 95%;
+    background: #707793;
+    box-shadow: 0 30px 30px rgba(0,0,0,0.05);
+    border-radius: 10px;
+    overflow: hidden;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.25s;
+}
+
+.dropdown.active .option{
+    visibility: visible;
+    opacity: 1;
+}
+
+.dropdown .option div{
+     padding: 12px 30px;
+     cursor: pointer;
+}
+
+.dropdown .option div:hover{
+    background: #62baea;
+    color: #fff;
 }
 

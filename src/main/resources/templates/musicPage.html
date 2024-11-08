@@ -26,6 +26,26 @@
   </audio>
 </div>
 
+<div class="selection-container">
+  <div class="toggle-container">
+    <form class="toggle">
+      <input type="radio" id="play-toggle" name="choice"  value="noShuffle" checked>
+      <label for="play-toggle">Play</label>
+      <input type="radio" id="shuffle-toggle" name="choice" value="shuffle">
+      <label for="shuffle-toggle">Shuffle</label>
+      <div id="flap"><span class="content">noShuffle</span></div>
+    </form>
+  </div>
+  <div class="dropdown-container">
+    <div class="dropdown">
+      <label>
+        <input type="text" class="playlist" readonly placeholder="Playlists" >
+      </label>
+      <div class="option" id="playlist-options"></div>
+    </div>
+  </div>
+</div>
+
 <div class="button-container">
 <button class="button-40" role="button" id="previous-button">Previous</button>
 <button  class="button-40" role="button" id="play-button">Play</button>

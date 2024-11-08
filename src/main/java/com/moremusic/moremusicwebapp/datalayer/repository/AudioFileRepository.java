@@ -12,6 +12,6 @@ import java.util.List;
 public interface AudioFileRepository extends JpaRepository<AudioFiles, Long> {
     boolean existsByFileName(String fileName);
 
-    @Query("SELECT af FROM AudioFiles af JOIN ApplicationUserPlaylist aup ON af.id = aup.audioFileId WHERE aup.applicationUserId = :userId")
+    @Query("SELECT af FROM AudioFiles af JOIN ApplicationUserPlaylist aup ON af.id = aup.audioFileId WHERE aup.applicationUserId = :userId ORDER BY af.fileName")
     List<AudioFiles> findByUserPlaylist(@Param("userId") Long userId);
 }
