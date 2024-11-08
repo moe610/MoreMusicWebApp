@@ -271,16 +271,24 @@ audio {
     margin-top: 1rem !important;
 }
 
+/* selection option grid */
+.selection-container{
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+
 /* toggle */
 :root {
     --accent: #04da97;
-    --border-width: 6px;
+    --border-width: 3px;
     --border-radius: 55px;
-    --font-size: 30px;
+    --font-size: 16px;
 }
 
 .toggle-container {
-    margin: 10px;
+    margin: 15px;
     text-align: center;
     padding: 10px;
 }
@@ -311,7 +319,7 @@ audio {
 
 .toggle>label {
     display: inline-block;
-    min-width: 49%;
+    min-width: 47%;
     font-size: var(--font-size);
     text-align: center;
     color: var(--accent);
@@ -326,9 +334,9 @@ audio {
 
 .toggle>#flap {
     position: absolute;
-    top: calc( 0px - var(--border-width));
+    top: calc( 1px - var(--border-width));
     left: 50%;
-    height: calc(100% + var(--border-width)* 2);
+    height: calc(88% + var(--border-width)* 2);
     width: 51%;
     display: flex;
     justify-content: center;
@@ -349,15 +357,22 @@ audio {
 }
 
 /* Dropdown menu */
+@import url('https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900');
+.dropdown-container *{
+    box-sizing:border-box;
+    font-family:'Poppins', sans-serif;
+    color:var(--accent);
+}
+
+.playlist{
+    background-color: #2E3047;
+    color:var(--accent);
+}
 
 .dropdown{
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-
     position: relative;
-    margin-top: 100px;
-    width: 300px;
+    margin: 12px;
+    padding: 10px;
     height: 50px;
 }
 
@@ -403,16 +418,15 @@ audio {
     border-radius: 10px;
     padding: 12px 20px;
     font-size: 16px;
-    background: #fff;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-    outline: none;
-    border: none;
+    outline: 5px solid var(--accent);
+    outline-offset: -5px;
 }
 
 .dropdown .option{
     position: absolute;
-    width: 100%;
-    background: #fff;
+    top:55px;
+    width: 95%;
+    background: #707793;
     box-shadow: 0 30px 30px rgba(0,0,0,0.05);
     border-radius: 10px;
     overflow: hidden;

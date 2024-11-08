@@ -26,25 +26,23 @@
   </audio>
 </div>
 
-<div class="toggle-container">
-  <form class="toggle">
-    <input type="radio" id="play-toggle" name="choice"  value="noShuffle" checked>
-    <label for="play-toggle">Play</label>
-    <input type="radio" id="shuffle-toggle" name="choice" value="shuffle">
-    <label for="shuffle-toggle">Shuffle</label>
-    <div id="flap"><span class="content">noShuffle</span></div>
-  </form>
-</div>
-
-<div class="dropdown">
-  <input type="text" class="text02" readonly placeholder="Playlists menu" >
-  <div class="option">
-    <div onmouseover="show('html')">html</div>
-    <div onmouseover="show('html1')">html1</div>
-    <div onmouseover="show('html2')">html2</div>
-    <div onmouseover="show('html3')">html3</div>
-    <div onmouseover="show('html4')">html4</div>
-    <div onmouseover="show('html5')">html5</div>
+<div class="selection-container">
+  <div class="toggle-container">
+    <form class="toggle">
+      <input type="radio" id="play-toggle" name="choice"  value="noShuffle" checked>
+      <label for="play-toggle">Play</label>
+      <input type="radio" id="shuffle-toggle" name="choice" value="shuffle">
+      <label for="shuffle-toggle">Shuffle</label>
+      <div id="flap"><span class="content">noShuffle</span></div>
+    </form>
+  </div>
+  <div class="dropdown-container">
+    <div class="dropdown">
+      <label>
+        <input type="text" class="playlist" readonly placeholder="Playlists" >
+      </label>
+      <div class="option" id="playlist-options"></div>
+    </div>
   </div>
 </div>
 

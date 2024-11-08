@@ -1,5 +1,7 @@
 const apiAudioFiles = `/${contextPath}/api/v1/audioFiles`;
 const apiShuffleAudioFiles = `/${contextPath}/api/v1/audioFiles/shuffle`;
+const apiUserPlaylists = `/${contextPath}/api/v1/audioFiles/userPlaylists`;
+const apiAudioFilesForUserPlaylist = `/${contextPath}/api/v1/audioFiles/audioFilesForUserPlaylist`;
 const token = localStorage.getItem('jwtToken');
 const audio = document.getElementById('audio-player');
 const playButton = document.getElementById('play-button');
@@ -11,6 +13,7 @@ const st = {};
 let audioFiles = [];
 let currentIndex = 0;
 let skipTime = 0;
+let userPlayListId = 0;
 
 function togglePlay() {
     if (audio.paused) {
@@ -178,8 +181,34 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('click', (e) => st.clickHandler(e));
 
 //playlist dropdown
-function show(active) {
-    document.querySelector('.text02').value = a;
+function show(username) {
+    document.querySelector('.playlist').value = username;
+}
+
+async function populateDropdown(){
+    try {
+        // Fetch the data from the API
+        const response = await fetch(apiUserPlaylists);
+        const users = await response.json();
+
+        // Select the options container
+        const optionsContainer = document.getElementById('playlist-options');
+
+        // Clear any existing options
+        optionsContainer.innerHTML = '';
+
+        // Create a div for each user and add it to the options container
+        users.forEach(user => {
+            const option = document.createElement('div');
+            option.textContent = user.username; // Assuming 'username' is the field you want
+            option.onmouseover = () => show(user.username);
+            // When clicking an option, fetch the audio files for the user
+            option.onclick = () => fetchAudioFilesForUser(user.id);
+            optionsContainer.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error fetching user playlists:', error);
+    }
 }
 
 let dropdown = document.querySelector('.dropdown');
@@ -187,6 +216,27 @@ dropdown.onclick = function(){
     dropdown.classList.toggle('active');
 }
 
+// Call populateDropdown when the page loads
+document.addEventListener('DOMContentLoaded', populateDropdown);
+
+// get playlist for user selected in dropdown
+function fetchAudioFilesForUser(userId){
+    fetch(`${apiAudioFilesForUserPlaylist}/${userId}`, { // Append the userId to the API URL
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch audio files');
+            }
+            return response.json();
+        })
+        .then(files => {
+            audioFileMapping(files);
+        })
+        .catch(error => console.error('Error fetching audio files:', error));
+}
 
 // Toggle to switch to shuffle
 document.getElementById('shuffle-toggle').addEventListener('change', function() {

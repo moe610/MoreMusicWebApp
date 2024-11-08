@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -56,6 +57,18 @@ public class AudioFileController {
         logger.info("Retrieving list of users playlists.");
         try{
             return applicationUserService.getAllUsers();
+        }
+        catch(Exception e){
+            logger.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @GetMapping("/audioFilesForUserPlaylist/{userId}")
+    public List<AudioFiles> getAudioFilesForUserPlaylist(@PathVariable Long userId){
+        logger.info("Retrieving user playlist audio files.");
+        try{
+            return audioFileService.getAudioFilesForPlaylistUser(userId);
         }
         catch(Exception e){
             logger.error(e.getMessage());

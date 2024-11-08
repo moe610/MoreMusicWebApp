@@ -34,6 +34,10 @@ public class AudioFileService {
         return audioFileRepository.findByUserPlaylist(currentUser.getId());
     }
 
+    public List<AudioFiles> getAudioFilesForPlaylistUser(long userId){
+        return audioFileRepository.findByUserPlaylist(userId);
+    }
+
     public List<AudioFiles> getShuffledAudioFilesForCurrentUser() {
         ApplicationUser currentUser = applicationUserService.getCurrentUser();
         List<AudioFiles> audioFiles = audioFileRepository.findByUserPlaylist(currentUser.getId());
