@@ -1,6 +1,23 @@
 /* CSS */
+@import url('https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900');
+
+input, button {
+    pointer-events: auto;
+    touch-action: manipulation;
+  }
+
+body {
+    background-color: #111827;
+}
+
 .body-dark-gray{
     background-color: #111827;
+}
+
+.home-button-container{
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Change 3 to the number of buttons */
 }
 
 /* Container at the top */
@@ -75,7 +92,6 @@
     font-family: "Inter var",ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
     font-size: 1.25rem;
     font-weight: bold;
-    padding-right: 0%;
 }
 
 .home-link:hover, .another-link:hover {
@@ -104,7 +120,6 @@
     border: 2px solid #707793; /* Change border color */
     border-radius: 5px; /* Rounded corners */
     padding: 10px; /* Spacing around the audio player */
-    width: fit-content; /* Adjust width to fit content */
 }
 
 audio {
@@ -212,7 +227,7 @@ audio {
     border: 2px solid #707793; /* Change border color */
     border-radius: 5px; /* Rounded corners */
     padding: 10px; /* Spacing around the audio player */
-    #width: fit-content; /* Adjust width to fit content */
+    width: fit-content; /* Adjust width to fit content */
 }
 
 .upload-label{
@@ -287,6 +302,43 @@ audio {
     --font-size: 16px;
 }
 
+.toggle-btn{
+    background-color: #2E3047;
+    border: 1px solid #707793;
+    border-radius: 99px;
+    width: 50px;
+    height: 28px;
+    transition: background-color 0.1s ease, border-color 0.2s ease;
+    cursor: pointer;
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.784);
+    position: relative;
+}
+
+.toggle-btn .thumb{
+   height: 20px;
+   width: 20px;
+   background-color: #04da97;
+   border-radius: 99px; 
+   transform: translateX(0);
+   transition: left 0.15s ease;
+   position: absolute;
+   left: 3px;
+   top: 50%;
+   transform: translateY(-50%);
+}
+
+.toggle-btn.toggled{
+    background-color: #fff;
+}
+
+.toggle-btn:hover{
+    border-color:#707793;
+}
+
+.toggle-btn.toggled .thumb{
+    left: calc(50px - 25px)
+}
+
 .toggle-container {
     margin: 15px;
     text-align: center;
@@ -356,8 +408,14 @@ audio {
     transform-style: preserve-3d;
 }
 
+
+
+
+
+
+
+
 /* Dropdown menu */
-@import url('https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900');
 .dropdown-container *{
     box-sizing:border-box;
     font-family:'Poppins', sans-serif;
