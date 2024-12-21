@@ -19,6 +19,8 @@ function MusicPage() {
   const [userId, setUserId] = useState(0);
   const [userName, setUserName] = useState("");
   const [toggled, setToggled] = useState(false);
+  const [isDropdownActive, setIsDropdownActive] = useState(false);
+  const [selectedUser, setSelectedUser] = useState('');
   
   const audioRef = useRef(null);
   
@@ -77,31 +79,22 @@ function MusicPage() {
         console.error('Error fetching user data:', error);
       }
     }
-  }  
+  }
 
-  useEffect(() => {
-    // Add the onTimeUpdate event listener
-    if (audioRef.current) {
-      const handleTimeUpdate = () => {
-        if (audioRef.current.currentTime >= skipTime) {
-          playNextAudio();
-        }
-      };
+  const fetchAudioFilesForUser = async (id) => {
+    if (token){
+      try{
+        const audioFileResponse = await fetch(`${apiUrl}/api/v1/audioFiles/audioFilesForUserPlaylist/${id}`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        const audioFilesData = await audioFileResponse.json();
+        setAudioFiles(audioFilesData);
 
-      audioRef.current.addEventListener('timeupdate', handleTimeUpdate);
-
-      return () => {
-        // Cleanup event listener on unmount
-        audioRef.current.removeEventListener('timeupdate', handleTimeUpdate);
-      };
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
     }
-  }, [skipTime, currentIndex]); // Re-run when skipTime or currentIndex changes
-
-  useEffect(() => {
-    if(audioFiles.length > 0){
-      getCurrentAudioFile(audioFiles);
-    }
-  }, [audioFiles]);
+  }
 
   const getCurrentAudioFile = (files) => {
     const audioFiles = files;
@@ -189,12 +182,49 @@ function MusicPage() {
     }
   };
 
+  // Handle dropdown item click
+  const handleOptionClick = (user) => {
+    setSelectedUser(user.username); // Set the selected user in the input
+    setUserId(user.id);             // Set the userId
+    setUserName(user.username);     // Set the userName
+    setIsDropdownActive(false);     // Close the dropdown
+    fetchAudioFilesForUser(user.id); // Replace with the actual function to fetch audio files
+  };
+
+  // Check audio file time to play next song
+  useEffect(() => {
+    // Add the onTimeUpdate event listener
+    if (audioRef.current) {
+      const handleTimeUpdate = () => {
+        if (audioRef.current.currentTime >= skipTime) {
+          playNextAudio();
+        }
+      };
+
+      audioRef.current.addEventListener('timeupdate', handleTimeUpdate);
+
+      return () => {
+        // Cleanup event listener on unmount
+        audioRef.current.removeEventListener('timeupdate', handleTimeUpdate);
+      };
+    }
+  }, [skipTime, currentIndex]); // Re-run when skipTime or currentIndex changes
+
+  // Get current audio file
+  useEffect(() => {
+    if(audioFiles.length > 0){
+      getCurrentAudioFile(audioFiles);
+    }
+  }, [audioFiles]);
+
+  //Load audio file
   useEffect(() => {
     if (audioFiles.length > 0) {
       loadAudioFile(currentIndex);
     }
   }, [audioFiles]);
 
+  //Initialize webpage
   useEffect(() => {
     validateJwtToken(navigate);
     fetchInitialData();
@@ -213,9 +243,9 @@ function MusicPage() {
         <audio ref={audioRef} controls></audio>
       </div>
 
-      <div className="select-container">
+      <div className="selection-container">
         <div className="toggle-container">
-          <h2 className="title-40">Shuffle</h2>
+          <h2 className="toggle_title">Shuffle</h2>
           <button
             className={`toggle-btn ${toggled ? "toggled" : ""}`}
             onClick={() => {
@@ -228,19 +258,25 @@ function MusicPage() {
           </button>
         </div>
         <div className="dropdown-container">
-          <div className="dropdown">
-            <select>
-              onChange={(e) =>{
-                const c = allUsers?.find((x) => x.id === e.target.value)
-                console.log(c)
-              }}
-              {allUsers
-                ? allUsers.map((user) => {
-                  return <option key={user.id} value={user.username}>{user.username}</option>
-                })
-                : null
-              }
-            </select>
+          <div className={`dropdown ${isDropdownActive ? 'active' : ''}`}
+            onClick={() => setIsDropdownActive(!isDropdownActive)}
+          >
+            <label>
+              <input type="text" className="playlist" readonly placeholder="Playlists" value={selectedUser || ''} />
+            </label>
+            {isDropdownActive && (
+              <div className="option" id="playlist-options">
+                {allUsers.map((user) => (
+                  <div
+                    key={user.id}
+                    onMouseOver={() => setSelectedUser(user.username)}
+                    onClick={() => handleOptionClick(user)}
+                  >
+                    {user.username}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

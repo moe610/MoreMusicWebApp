@@ -201,7 +201,9 @@ audio {
     color:#3BBA9C;
     border: 1px solid #707793;
     display: flex;
-    width: 100%;
+    max-width: 100%; /* Ensures it doesn't exceed the container width */
+    overflow-x: hidden; /* Prevents horizontal scrolling due to content */
+    text-overflow: ellipsis; /* Truncates overflowing text with "..." */
     box-sizing: border-box;
 }
 
@@ -217,7 +219,6 @@ audio {
 
 .audio-item.active{
     color:black;
-    font-weight:bold;
     background-color: #f0f0f0;
 }
 
@@ -288,7 +289,6 @@ audio {
 
 /* selection option grid */
 .selection-container{
-    margin-top: 10px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
 }
@@ -302,6 +302,14 @@ audio {
     --font-size: 16px;
 }
 
+.toggle_title{
+    font-size: 1rem;
+    font-weight: 800;
+    text-align: center;
+    color: #707793;
+    margin-top:20px;
+}
+
 .toggle-btn{
     background-color: #2E3047;
     border: 1px solid #707793;
@@ -312,6 +320,7 @@ audio {
     cursor: pointer;
     box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.784);
     position: relative;
+    margin-top: 18px
 }
 
 .toggle-btn .thumb{
@@ -322,7 +331,6 @@ audio {
    transform: translateX(0);
    transition: left 0.15s ease;
    position: absolute;
-   left: 3px;
    top: 50%;
    transform: translateY(-50%);
 }
@@ -336,86 +344,19 @@ audio {
 }
 
 .toggle-btn.toggled .thumb{
-    left: calc(50px - 25px)
+    transform: translateX(22px) translateY(-50%);
 }
 
 .toggle-container {
-    margin: 15px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    position: relative;
     text-align: center;
     padding: 10px;
 }
 
-.toggle {
-    position: relative;
-    border: solid var(--border-width) var(--accent);
-    border-radius: var(--border-radius);
-    transition: transform cubic-bezier(0, 0, 0.30, 2) .4s;
-    transform-style: preserve-3d;
-}
-
-.toggle>input[type="radio"] {
-    display: none;
-}
-
-.toggle>#play-toggle:checked~#flap {
-    transform: rotateY(180deg);
-}
-
-.toggle>#play-toggle:checked~#flap>.content {
-    transform: rotateY(180deg);
-}
-
-.toggle>#shuffle-toggle:checked~#flap {
-    transform: rotateY(0deg);
-}
-
-.toggle>label {
-    display: inline-block;
-    min-width: 47%;
-    font-size: var(--font-size);
-    text-align: center;
-    color: var(--accent);
-    cursor: pointer;
-}
-
-.toggle>label,
-.toggle>#flap {
-    font-weight: bold;
-    text-transform: capitalize;
-}
-
-.toggle>#flap {
-    position: absolute;
-    top: calc( 1px - var(--border-width));
-    left: 50%;
-    height: calc(88% + var(--border-width)* 2);
-    width: 51%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: var(--font-size);
-    background-color: var(--accent);
-    border-top-right-radius: var(--border-radius);
-    border-bottom-right-radius: var(--border-radius);
-    transform-style: preserve-3d;
-    transform-origin: left;
-    transition: transform cubic-bezier(0.4, 0, 0.2, 1) .5s;
-}
-
-.toggle>#flap>.content {
-    color: #333;
-    transition: transform 0s linear .25s;
-    transform-style: preserve-3d;
-}
-
-
-
-
-
-
-
-
 /* Dropdown menu */
+
 .dropdown-container *{
     box-sizing:border-box;
     font-family:'Poppins', sans-serif;
@@ -507,4 +448,7 @@ audio {
     background: #62baea;
     color: #fff;
 }
+
+
+
 
