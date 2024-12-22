@@ -2,27 +2,26 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { validateJwtToken } from './utils/authUtils.js';
 
-import "./styles.css";
-
 function MusicPage() {
   const navigate = useNavigate();
   const apiUrl = `${import.meta.env.VITE_API_URL}`;
   const apiCurrentUser = `${apiUrl}/api/v1/applicationUsers/currentUser`;
   const apiAllUsers = `${apiUrl}/api/v1/applicationUsers/userNames`;
   
+  const [token, setToken] = useState(localStorage.getItem('jwtToken'));
   const [audioFiles, setAudioFiles] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [skipTime, setSkipTime] = useState(0);
-  const [token, setToken] = useState(localStorage.getItem('jwtToken'));
   const [isPlaying, setIsPlaying] = useState(false);
   const [userId, setUserId] = useState(0);
   const [userName, setUserName] = useState("");
   const [toggled, setToggled] = useState(false);
   const [isDropdownActive, setIsDropdownActive] = useState(false);
-  const [selectedUser, setSelectedUser] = useState('');
+  const [audioRefInitialized, setAudioRefInitialized] = useState('');
   
   const audioRef = useRef(null);
+  const [isRefInitialized, setRefInitialized] = useState(false);
   
   // Fetch initial data when the page loads for the logged-in user
   const fetchInitialData = async () => {
@@ -61,6 +60,8 @@ function MusicPage() {
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
+
+      setRefInitialized(true);
     } else {
       console.error("No JWT token found in localStorage");
     }
@@ -184,7 +185,6 @@ function MusicPage() {
 
   // Handle dropdown item click
   const handleOptionClick = (user) => {
-    setSelectedUser(user.username); // Set the selected user in the input
     setUserId(user.id);             // Set the userId
     setUserName(user.username);     // Set the userName
     setIsDropdownActive(false);     // Close the dropdown
@@ -231,7 +231,7 @@ function MusicPage() {
   }, [navigate]);
 
   return (
-    <div className="body-dark-gray">
+      <div className="body-dark-gray">
       <div className="top-container">
         <Link to="/" className="home-link">Home</Link>
         <Link to="/upload" className="upload-link">Upload</Link>
@@ -262,14 +262,14 @@ function MusicPage() {
             onClick={() => setIsDropdownActive(!isDropdownActive)}
           >
             <label>
-              <input type="text" className="playlist" readonly placeholder="Playlists" value={selectedUser || ''} />
+              <input type="text" className="playlist" readonly placeholder="Playlists" value={userName || ''} />
             </label>
             {isDropdownActive && (
               <div className="option" id="playlist-options">
                 {allUsers.map((user) => (
                   <div
                     key={user.id}
-                    onMouseOver={() => setSelectedUser(user.username)}
+                    onMouseOver={() => setUserName(user.username)}
                     onClick={() => handleOptionClick(user)}
                   >
                     {user.username}

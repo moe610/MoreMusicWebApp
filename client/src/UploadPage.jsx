@@ -1,14 +1,57 @@
+import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { validateJwtToken } from './utils/authUtils.js';
 import "./styles.css"
-import { Link } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function UploadPage(){
+  const navigate = useNavigate();
+  const apiUrl = `${import.meta.env.VITE_API_URL}`;
+  const apiUploadUrl = `${apiUrl}/api/v1/uploadAudioFiles`;
+  const [token, setToken] = useState(localStorage.getItem('jwtToken'));
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = () => {
-     //Placeholder for submit logic
-    setMessage('URL submitted successfully!');
+  const fetchUploadResponse = async (youtubeUrl, messageElement, submitButton) => {
+    if (token) {
+      try {
+        setIsSubmitting(true); // Disable submit button during submission
+        setMessage(''); // Clear previous message
+
+        //Send the POST request with the youtube URL
+        const response = await fetch(`${apiUploadUrl}`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` 
+          },
+          body: JSON.stringify({ youtubeUrl})
+        });
+        
+        if (response.ok){
+          setMessage('Audio file uploaded successfully!');
+        } else {
+          const errorText = await response.text();
+          throw new Error(errorText);
+        }
+      } catch (error) {
+        setMessage(`Error: ${error.message}`);
+      } finally {
+        setIsSubmitting(false); // Re-enable the submit button
+      }
+    }
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevent the default form submission
+    fetchUploadResponse(); // Call the upload function
   };
+
+  //Initialize webpage
+  useEffect(() => {
+    validateJwtToken(navigate);
+  }, [navigate]);
 
   return (
     <div className="body-dark-gray">
@@ -34,11 +77,12 @@ function UploadPage(){
           id="submitButton"
           className="btn btn-primary"
           onClick={handleSubmit}
+          disabled={isSubmitting} // Disable when submitting
         >
           Submit
         </button>
         {message && (
-          <div id="message" className="alert mt-3">
+          <div id="message" className={`alert mt-3 ${message.includes('Error') ? 'alert-danger' : 'alert-success'}`}>
             {message}
           </div>
         )}

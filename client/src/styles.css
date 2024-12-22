@@ -7,10 +7,11 @@ input, button {
   }
 
 body {
-    background-color: #111827;
+    background-color: #111827 !important;
 }
 
 .body-dark-gray{
+    margin: 0; /* add */
     background-color: #111827;
 }
 
@@ -323,12 +324,23 @@ audio {
     margin-top: 18px
 }
 
+@media (max-width: 768px) {
+    .toggle-btn .thumb {
+        transform: translateX(-8px) translateY(-50%) !important;
+    }
+}
+
+@media (max-width: 1024px) {
+    .toggle-btn .thumb {
+        transform: translateX(-8px) translateY(-50%) !important;
+    }
+}
+
 .toggle-btn .thumb{
    height: 20px;
    width: 20px;
    background-color: #04da97;
-   border-radius: 99px; 
-   transform: translateX(0);
+   border-radius: 50%; 
    transition: left 0.15s ease;
    position: absolute;
    top: 50%;
@@ -343,8 +355,20 @@ audio {
     border-color:#707793;
 }
 
+@media (max-width: 768px) {
+    .toggle-btn.toggled .thumb {
+        transform: translateX(15px) translateY(-50%) !important;
+    }
+}
+
+@media (max-width: 1024px){
+    .toggle-btn.toggled .thumb {
+        transform: translateX(15px) translateY(-50%) !important;
+    }
+}
+
 .toggle-btn.toggled .thumb{
-    transform: translateX(22px) translateY(-50%);
+    transform: translateX(20px) translateY(-50%);
 }
 
 .toggle-container {

@@ -48,7 +48,7 @@ function Login(){
   };
 
   return (
-    <div className="body-dark-gray">
+    <div className="body-dark-gray login-register-body">
         <div className="login-container">
             <h2>Login</h2>
             {/* Conditionally render error message */}
