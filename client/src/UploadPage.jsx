@@ -13,11 +13,13 @@ function UploadPage(){
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const fetchUploadResponse = async (youtubeUrl, messageElement, submitButton) => {
+  const fetchUploadResponse = async () => {
     if (token) {
       try {
         setIsSubmitting(true); // Disable submit button during submission
         setMessage(''); // Clear previous message
+
+        console.log(youtubeUrl);
 
         //Send the POST request with the youtube URL
         const response = await fetch(`${apiUploadUrl}`, {
@@ -26,7 +28,7 @@ function UploadPage(){
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}` 
           },
-          body: JSON.stringify({ youtubeUrl})
+          body: JSON.stringify({youtubeUrl})
         });
         
         if (response.ok){
@@ -75,7 +77,7 @@ function UploadPage(){
         </div>
         <button
           id="submitButton"
-          className="btn btn-primary"
+          className="upload-button btn btn-primary"
           onClick={handleSubmit}
           disabled={isSubmitting} // Disable when submitting
         >

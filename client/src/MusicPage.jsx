@@ -18,10 +18,8 @@ function MusicPage() {
   const [userName, setUserName] = useState("");
   const [toggled, setToggled] = useState(false);
   const [isDropdownActive, setIsDropdownActive] = useState(false);
-  const [audioRefInitialized, setAudioRefInitialized] = useState('');
   
   const audioRef = useRef(null);
-  const [isRefInitialized, setRefInitialized] = useState(false);
   
   // Fetch initial data when the page loads for the logged-in user
   const fetchInitialData = async () => {
@@ -60,8 +58,6 @@ function MusicPage() {
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
-
-      setRefInitialized(true);
     } else {
       console.error("No JWT token found in localStorage");
     }
@@ -99,24 +95,15 @@ function MusicPage() {
 
   const getCurrentAudioFile = (files) => {
     const audioFiles = files;
-    let skipTime = 0;
     let currentIndex = 0;
     setCurrentIndex(currentIndex);
   
     // Populate the scrollable list
     audioFiles.forEach((file, index) => {
+        console.log(index);
         const listItem = document.createElement('div');
         listItem.className = 'audio-item';
         listItem.textContent = file.title; // Display the title
-  
-        listItem.onclick = () => {
-            currentIndex = index; // Set the current index
-            setCurrentIndex(currentIndex);
-            listItem.classList.add('active'); // Highlight the selected item
-            loadAudioFile(currentIndex); // Load the selected audio file
-            skipTime = audioFiles[currentIndex].duration - 2;
-            setSkipTime(skipTime);
-        };
     });
   
     // Initialize media session metadata
@@ -137,6 +124,13 @@ function MusicPage() {
         .catch(error => console.error('Error playing audio:', error));
       setSkipTime(newFile.duration - 2);
     }
+  };
+
+  const onClickAudioItem = (index) => {
+    const newIndex = index;
+    setCurrentIndex(newIndex);
+    loadAudioFile(newIndex);
+    setSkipTime(audioFiles[newIndex].duration - 2);
   };
 
   const togglePlay = () => {
@@ -205,7 +199,9 @@ function MusicPage() {
 
       return () => {
         // Cleanup event listener on unmount
-        audioRef.current.removeEventListener('timeupdate', handleTimeUpdate);
+        if(audioRef.current){
+          audioRef.current.removeEventListener('timeupdate', handleTimeUpdate);
+        }
       };
     }
   }, [skipTime, currentIndex]); // Re-run when skipTime or currentIndex changes
@@ -262,7 +258,7 @@ function MusicPage() {
             onClick={() => setIsDropdownActive(!isDropdownActive)}
           >
             <label>
-              <input type="text" className="playlist" readonly placeholder="Playlists" value={userName || ''} />
+              <input type="text" className="playlist" readOnly placeholder="Playlists" value={userName || ''} />
             </label>
             {isDropdownActive && (
               <div className="option" id="playlist-options">
@@ -292,7 +288,9 @@ function MusicPage() {
           <div 
             key={file.id} 
             className={`audio-item ${index === currentIndex ? 'active' : ''}`} 
-            onClick={() => loadAudioFile(index)}
+            onClick={() => 
+              onClickAudioItem(index)  
+            }
           >
             {file.title}
           </div>
