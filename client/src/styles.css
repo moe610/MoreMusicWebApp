@@ -314,13 +314,7 @@ audio {
 
 @media (max-width: 768px) {
     .toggle-btn .thumb {
-        transform: translateX(-8px) translateY(-50%) !important;
-    }
-}
-
-@media (max-width: 1024px) {
-    .toggle-btn .thumb {
-        transform: translateX(-8px) translateY(-50%) !important;
+        transform: translateX(-13px) translateY(-50%) !important;
     }
 }
 
@@ -345,13 +339,7 @@ audio {
 
 @media (max-width: 768px) {
     .toggle-btn.toggled .thumb {
-        transform: translateX(15px) translateY(-50%) !important;
-    }
-}
-
-@media (max-width: 1024px){
-    .toggle-btn.toggled .thumb {
-        transform: translateX(15px) translateY(-50%) !important;
+        transform: translateX(10px) translateY(-50%) !important;
     }
 }
 

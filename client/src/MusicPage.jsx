@@ -185,6 +185,36 @@ function MusicPage() {
     fetchAudioFilesForUser(user.id); // Replace with the actual function to fetch audio files
   };
 
+  useEffect(() => {
+    const audioElement = audioRef.current;
+
+    // Set media session metadata
+    if (audioFiles.length > 0){
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new window.MediaMetadata({
+          title: audioFiles[currentIndex].title,
+          artist: audioFiles[currentIndex].artist || 'Unknown Artist',
+          album: audioFiles[currentIndex].album || 'Unknown Album',
+          artwork: [
+            {
+              src: audioFiles[currentIndex].artwork || 'default-image.jpg',
+              sizes: '512x512',
+              type: 'image/png',
+            },
+          ],
+        });
+
+        console.log("audioFiles lenght greater than 0");
+  
+        // Define action handlers
+        navigator.mediaSession.setActionHandler('previoustrack', playPreviousAudio);
+        navigator.mediaSession.setActionHandler('nexttrack', playNextAudio);
+        navigator.mediaSession.setActionHandler('play', togglePlay);
+        navigator.mediaSession.setActionHandler('pause', togglePlay);
+      }
+    }
+  }, [currentIndex, audioFiles]);
+
   // Check audio file time to play next song
   useEffect(() => {
     // Add the onTimeUpdate event listener
