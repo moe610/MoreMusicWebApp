@@ -4,7 +4,8 @@ import { validateJwtToken } from './utils/authUtils.js';
 
 function MusicPage() {
   const navigate = useNavigate();
-  const apiUrl = `${import.meta.env.VITE_API_URL}`;
+  const isExternalNetwork = window.location.hostname === 'moremusic.duckdns.org';
+  const apiUrl = isExternalNetwork ? 'https://moremusic.duckdns.org:8443/MoreMusicWebApp' : `${import.meta.env.VITE_API_URL}`;
   const apiCurrentUser = `${apiUrl}/api/v1/applicationUsers/currentUser`;
   const apiAllUsers = `${apiUrl}/api/v1/applicationUsers/userNames`;
   

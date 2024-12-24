@@ -8,4 +8,5 @@ export default defineConfig({
     host: '0.0.0.0', // Allow access from any IP on your network
     port: 5173, // Optional: You can set a different port if needed
   },
+  base:"/MoreMusicWebApp"
 })

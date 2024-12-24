@@ -7,7 +7,7 @@ import Register from './RegisterPage';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/MoreMusicWebApp">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

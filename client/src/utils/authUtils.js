@@ -1,11 +1,12 @@
 export async function validateJwtToken(navigate) {
     const token = localStorage.getItem('jwtToken');
-    const apiUrlValidate = `${import.meta.env.VITE_API_URL}/api/v1/auth/validate`;
-    const urlLogin = `${import.meta.env.VITE_BASE_URL}login`;
+    const isExternalNetwork = window.location.hostname === 'moremusic.duckdns.org';
+    const apiUrl = isExternalNetwork ? 'https://moremusic.duckdns.org:8443/MoreMusicWebApp' : `${import.meta.env.VITE_API_URL}`;
+    const apiUrlValidate = `${apiUrl}/api/v1/auth/validate`;
     
     if (!token) {
       console.error('No token found, redirecting to login.');
-      navigate(urlLogin);
+      navigate("/login");
     } else {
       try {
         const response = await fetch(apiUrlValidate, {
@@ -20,11 +21,11 @@ export async function validateJwtToken(navigate) {
           console.log('Token exists and is valid:', token);
         } else {
           console.error('Token is invalid or expired, redirecting to login.');
-          navigate(urlLogin);
+          navigate("/login");
         }
       } catch (error) {
         console.error('Error validating token:', error);
-        navigate(urlLogin);
+        navigate("/login");
       }
     }
 }

@@ -6,7 +6,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 function UploadPage(){
   const navigate = useNavigate();
-  const apiUrl = `${import.meta.env.VITE_API_URL}`;
+  const isExternalNetwork = window.location.hostname === 'moremusic.duckdns.org';
+  const apiUrl = isExternalNetwork ? 'https://moremusic.duckdns.org:8443/MoreMusicWebApp' : `${import.meta.env.VITE_API_URL}`;
   const apiUploadUrl = `${apiUrl}/api/v1/uploadAudioFiles`;
   const [token, setToken] = useState(localStorage.getItem('jwtToken'));
   const [youtubeUrl, setYoutubeUrl] = useState('');

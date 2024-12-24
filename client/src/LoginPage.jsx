@@ -14,9 +14,9 @@ function Login(){
     event.preventDefault(); // Prevent form from submitting in the default way
 
     // Get the API URL from environment variable
-    const apiUrlAuthenticate = `${import.meta.env.VITE_API_URL}/api/v1/auth/authenticate`;
-    const urlHome = `${import.meta.env.VITE_BASE_URL}`;
-
+    const isExternalNetwork = window.location.hostname === 'moremusic.duckdns.org';
+    const apiUrl = isExternalNetwork ? 'https://moremusic.duckdns.org:8443/MoreMusicWebApp' : `${import.meta.env.VITE_API_URL}`;
+    const apiUrlAuthenticate = `${apiUrl}/api/v1/auth/authenticate`;
     const credentials = { userName, password };
 
     try {
@@ -37,7 +37,7 @@ function Login(){
 
       if (token) {
         localStorage.setItem("jwtToken", token);
-        navigate(urlHome); // Redirect to home after successful login
+        navigate("/"); // Redirect to home after successful login
       } else {
         throw new Error("Token validation failed. Please log in again.");
       }
