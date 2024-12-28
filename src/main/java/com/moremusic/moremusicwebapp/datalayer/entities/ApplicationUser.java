@@ -14,6 +14,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
 @Entity
 @Table(name = "application_users")
 public class ApplicationUser implements UserDetails {
@@ -24,15 +26,17 @@ public class ApplicationUser implements UserDetails {
     private String firstName;
     @Column(name = "last_name", nullable = false, unique = false)
     private String lastName;
-    @Column(name = "user_name", nullable = false, unique = false)
+    @Column(name = "user_name", nullable = false, unique = true)
     private String username;
-    @Column(name = "email", nullable = false, unique = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
     @Column(name = "password", nullable = false, unique = false)
     private String password;
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_role", nullable = false, unique = false)
+    @Column(name = "user_role", unique = false)
     private ApplicationUserRole applicationUserRole;
+    @Column(name = "reset_token")
+    private String resetToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

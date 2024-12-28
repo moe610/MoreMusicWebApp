@@ -11,7 +11,7 @@ function Register(){
   const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [message, setMessage] = useState('');
   const navigate = useNavigate(); // For redirecting after successful login
 
   const handleSubmit = async (event) => {
@@ -32,22 +32,15 @@ function Register(){
         body: JSON.stringify(credentials),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to register user.");
-      }
+      const registerResponse = await response.text();
 
-      const data = await response.json();
-      const token = data.token;
-
-      if (token) {
-        localStorage.setItem("jwtToken", token);
-        navigate("/"); // Redirect to home after successful login
+      if (response.ok){
+        setMessage(registerResponse);
       } else {
-        throw new Error("Token validation failed. Please try again.");
+        throw new Error(registerResponse);
       }
     } catch (error) {
-      console.error("Registration error:", error);
-      setErrorMessage("Registration failed: " + error.message); // Set error message to state
+      setMessage(`Error: ${error.message}`);
     }
   };
 
@@ -55,8 +48,6 @@ function Register(){
     <div className="body-dark-gray login-register-body">
         <div className="login-container">
             <h2>Register</h2>
-            {/* Conditionally render error message */}
-            {errorMessage && <div id="error-message" className="error-message">{errorMessage}</div>}
 
             <form id="registerForm" onSubmit={handleSubmit}>
                 <input 
@@ -109,6 +100,13 @@ function Register(){
 
             <div className="register-link">
                 <p style={{ color: "white" }}>Have an account? <Link to="/login">Login here</Link> </p>
+            </div>
+            <div>
+              {message && (
+                <div id="message" className={`alert mt-3 ${message.includes('Error') ? 'alert-danger' : 'alert-success'}`}>
+                  {message}
+                </div>
+              )}
             </div>
         </div>
     </div>

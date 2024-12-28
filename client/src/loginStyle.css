@@ -26,16 +26,22 @@
     margin-bottom: 10px;
     display: none;
   }
-  .register-link {
+  .register-link,.reset-link {
     margin-top: 20px;
     text-align: center;
   }
 
-  .register-link a {
+  .register-link a,.reset-link a {
     color: #4CAF50;
     text-decoration: none;
   }
 
-  .register-link a:hover {
+  .register-link a:hover,.reset-link a:hover {
     text-decoration: underline;
+  }
+
+  .reset-Pass-Paragraph{
+    color:white;
+    font-size: 1em;
+    padding-top: 10px;
   }
