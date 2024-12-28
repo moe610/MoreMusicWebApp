@@ -3,10 +3,10 @@ import "./styles.css"
 import "./loginstyle.css"
 import { Link, useNavigate } from 'react-router-dom';
 
-function Login(){
+function ResetPasswordRequest(){
   // React state for form inputs and error handling
   const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [message, setMessage] = useState('');
   const navigate = useNavigate(); // For redirecting after successful login
 
@@ -16,11 +16,11 @@ function Login(){
     // Get the API URL from environment variable
     const isExternalNetwork = window.location.hostname === 'moremusic.duckdns.org';
     const apiUrl = isExternalNetwork ? 'https://moremusic.duckdns.org:8443/MoreMusicWebApp' : `${import.meta.env.VITE_API_URL}`;
-    const apiUrlAuthenticate = `${apiUrl}/api/v1/auth/authenticate`;
-    const credentials = { userName, password };
+    const apiUrlResetPasswordRequest = `${apiUrl}/api/v1/applicationUsers/resetPasswordRequest`;
+    const credentials = { userName, email };
 
     try {
-      const response = await fetch(apiUrlAuthenticate, {
+      const response = await fetch(apiUrlResetPasswordRequest, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -28,21 +28,12 @@ function Login(){
         body: JSON.stringify(credentials),
       });
 
-      if (!response.ok) {
-        const data = await response.json();
-        const error = data.error;
-        console.log(error);
-        throw new Error("Please check your username and password.");
-      }
+      const resetRequestReponse = await response.text();
 
-      const data = await response.json();
-      const token = data.token;
-
-      if (token) {
-        localStorage.setItem("jwtToken", token);
-        navigate("/"); // Redirect to home after successful login
+      if (response.ok){
+        setMessage(resetRequestReponse);
       } else {
-        throw new Error("Token validation failed. Please log in again.");
+        throw new Error(resetRequestReponse);
       }
     } catch (error) {
       setMessage(`Error: ${error.message}`);
@@ -52,40 +43,31 @@ function Login(){
   return (
     <div className="body-dark-gray login-register-body">
         <div className="login-container">
-            <h2>Login</h2>
+            <h2>Password Reset</h2>
 
-            <form id="loginForm"  onSubmit={handleSubmit}>
+            <form id="restPasswordForm"  onSubmit={handleSubmit}>
                 <input 
                   className="input_text" 
                   type="text" 
                   id="userName" 
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
-                  placeholder="Username" 
-                  required 
+                  placeholder="Username"  
                 />
+                <p className="reset-Pass-Paragraph">Or</p>
                 <input 
                   className="input_text" 
-                  type="password" 
-                  id="password" 
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password" 
-                  required 
+                  type="text" 
+                  id="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email Address" 
                 />
-                <button type="submit">Login</button>
+                <button type="submit">Reset Password</button>
             </form>
 
             <div className="register-link">
-                <p style={{ color: "white" }}>
-                  Don't have an account? <Link to="/register">Register here</Link> 
-                </p>
-            </div>
-
-            <div className="reset-link">
-                <p style={{ color: "white" }}>
-                  Forgot password? <Link to="/resetPasswordRequest">Reset Password</Link> 
-                </p>
+                <p style={{ color: "white" }}>Return to login <Link to="/login">Login here</Link> </p>
             </div>
 
             <div>
@@ -100,4 +82,4 @@ function Login(){
   )
 }
 
-export default Login;
+export default ResetPasswordRequest;

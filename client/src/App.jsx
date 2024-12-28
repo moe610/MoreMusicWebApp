@@ -4,6 +4,8 @@ import Music from './MusicPage';
 import Upload from './UploadPage';
 import Login from './LoginPage';
 import Register from './RegisterPage';
+import ResetPasswordRequest from './ResetPasswordRequestPage';
+import ResetPassword from './ResetPasswordPage';
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/resetPasswordRequest" element={<ResetPasswordRequest />} />
+        <Route path="/resetPassword" element={<ResetPassword />} />
         <Route path="/music" element={<Music />} />
         <Route path="/upload" element={<Upload />} />
       </Routes>
